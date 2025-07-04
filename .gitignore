@@ -1,0 +1,9 @@
+# node
+node_modules/
+.env
+
+# build artifacts
+dist/
+.next/
+.cache/
+turbo/
