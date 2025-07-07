@@ -1,0 +1,48 @@
+/* ======= GLOBAL THEME TOKENS ======= */
+
+:root {
+  --font-sans: 'Inter', sans-serif;
+}
+
+/* Light Theme */
+[data-theme='light'] {
+  --bg-color: #ffffff;
+  --text-color: #111827;
+  --card-bg: #f9fafb;
+  --card-border: #e5e7eb;
+  --accent: #5b9d93;
+  --accent-hover: #7bb4ab;
+  --danger: #e47049;
+  --gray-50: #f9fafb;
+  --gray-100: #f3f4f6;
+  --gray-300: #d1d5db;
+}
+
+/* Dark Theme */
+[data-theme='dark'] {
+  --bg-color: #0d0d0d;
+  --text-color: #f3f4f6;
+  --card-bg: #1a1a1a;
+  --card-border: #2d2d2d;
+  --accent: #5b9d93;
+  --accent-hover: #7bb4ab;
+  --danger: #f27e6c;
+  --gray-50: #1f1f1f;
+  --gray-100: #2c2c2c;
+  --gray-300: #3d3d3d;
+}
+
+/* ======= CUSTOM UTILS VIA TAILWIND CLASSES ======= */
+
+/* Example: used in tailwind as className="bg-[var(--bg-color)] text-[var(--text-color)]" */
+
+/* Optional default body styles */
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ======= TAILWIND CSS BASE ======= */
+@import 'tailwindcss';
