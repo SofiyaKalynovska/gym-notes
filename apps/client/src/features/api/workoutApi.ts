@@ -1,10 +1,8 @@
-import { apiSlice } from './apiSlice'
-import { Exercise, WorkoutSession } from '@/types'
+import { apiSlice } from './apiSlice';
+import { Exercise, WorkoutSession } from '@/types';
 
 export const workoutApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    // EXERCISES
-
     getExercises: builder.query<Exercise[], void>({
       query: () => '/exercises',
       providesTags: ['Exercise'],
@@ -18,8 +16,32 @@ export const workoutApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Exercise'],
     }),
+    startWorkoutTimer: builder.mutation<
+      WorkoutSession,
+      { exercises: string[] }
+    >({
+      query: (body) => ({
+        url: '/workouts/start',
+        method: 'POST',
+        body,
+      }),
+    }),
+    updateWorkout: builder.mutation<
+      WorkoutSession,
+      { id: string; data: Partial<WorkoutSession> }
+    >({
+      query: ({ id, data }) => ({
+        url: `/workouts/${id}`,
+        method: 'PUT',
+        body: data,
+      }),
+      invalidatesTags: ['Workout'],
+    }),
 
-    updateExercise: builder.mutation<Exercise, { id: string; data: Partial<Exercise> }>({
+    updateExercise: builder.mutation<
+      Exercise,
+      { id: string; data: Partial<Exercise> }
+    >({
       query: ({ id, data }) => ({
         url: `/exercises/${id}`,
         method: 'PUT',
@@ -35,8 +57,6 @@ export const workoutApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Exercise'],
     }),
-
-    // WORKOUTS
 
     getLastLogs: builder.query<WorkoutSession[], string>({
       query: (exerciseId) => `/workouts/exercise/${exerciseId}`,
@@ -57,14 +77,16 @@ export const workoutApi = apiSlice.injectEndpoints({
       invalidatesTags: ['Workout'],
     }),
   }),
-})
+});
 
 export const {
   useGetExercisesQuery,
   useCreateExerciseMutation,
+  useStartWorkoutTimerMutation,
   useUpdateExerciseMutation,
+  useUpdateWorkoutMutation,
   useDeleteExerciseMutation,
   useGetLastLogsQuery,
   useGetAllWorkoutsQuery,
   useCreateWorkoutMutation,
-} = workoutApi
+} = workoutApi;
