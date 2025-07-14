@@ -21,6 +21,10 @@ export const createWorkout = (data) => {
   return WorkoutSession.create(data);
 };
 
+export const startWorkoutTimer = (data) => {
+  return WorkoutSession.create(data);
+};
+
 export const updateWorkout = (id, data) => {
   return WorkoutSession.findByIdAndUpdate(id, data, { new: true });
 };

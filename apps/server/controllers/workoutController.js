@@ -56,3 +56,24 @@ export const deleteWorkout = async (req, res, next) => {
     next(err)
   }
 }
+
+export const startWorkoutTimer = async (req, res, next) => {
+  try {
+    const exercises = req.body.exercises.map((id) => ({
+      exercise: id,
+      sets: [],
+    }));
+
+    const workout = await WorkoutRepo.createWorkout({
+      date: new Date().toISOString().split('T')[0],
+      status: 'draft',
+      startTime: new Date(),
+      exercises,
+    });
+
+    res.status(201).json(workout);
+  } catch (err) {
+    next(err);
+  }
+};
+

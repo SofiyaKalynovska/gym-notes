@@ -11,9 +11,12 @@ const WorkoutExerciseSchema = new mongoose.Schema({
 }, { _id: false })
 
 const WorkoutSessionSchema = new mongoose.Schema({
-  date: { type: String, required: true }, 
+  date: { type: String, required: true },
   status: { type: String, enum: ['draft', 'completed'], default: 'draft' },
+  startTime: { type: Date }, 
+  duration: { type: String }, 
   exercises: [WorkoutExerciseSchema],
-}, { timestamps: true })
+}, { timestamps: true });
+
 
 export default mongoose.model('WorkoutSession', WorkoutSessionSchema)
