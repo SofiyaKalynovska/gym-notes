@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 
 import exerciseRoutes from './routes/exercises.js';
 import workoutRoutes from './routes/workouts.js';
+import muscleGroupRoutes from './routes/muscleGroup.js';
 import errorHandler from './middlewares/errorHandler.js';
 
 dotenv.config();
@@ -22,11 +23,15 @@ app.use(
 
 app.use(express.json());
 
+app.use('/icons', express.static('public/icons'));
+
 app.get('/', (req, res) => {
   res.send('API is alive');
 });
+
 app.use('/api/exercises', exerciseRoutes);
 app.use('/api/workouts', workoutRoutes);
+app.use('/api/muscle-groups', muscleGroupRoutes);
 
 app.use(errorHandler);
 
