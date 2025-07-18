@@ -12,7 +12,7 @@ const WorkoutExerciseSchema = new mongoose.Schema({
 
 const WorkoutSessionSchema = new mongoose.Schema({
   date: { type: String, required: true },
-  status: { type: String, enum: ['draft', 'completed'], default: 'draft' },
+  status: { type: String, enum: ['draft', 'active', 'completed'], default: 'draft' },
   startTime: { type: Date }, 
   duration: { type: String }, 
   exercises: [WorkoutExerciseSchema],
