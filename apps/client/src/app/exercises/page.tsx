@@ -1,18 +1,21 @@
 'use client';
-
 import { useState } from 'react';
 import {
   useGetExercisesQuery,
   useCreateExerciseMutation,
-  useUpdateExerciseMutation,
   useDeleteExerciseMutation,
+  useGetMuscleGroupsQuery,
 } from '@/features/api/workoutApi';
 import { Exercise } from '@/types';
+import { ExerciseCard } from '@/components/ExerciseCard';
+import { ModalOverlay } from '@/components/ModalOverlay';
+import { Button } from '@/components/Button';
 
 export default function ExercisesPage() {
+  const { data: groups = [], isLoading: groupsLoading } =
+    useGetMuscleGroupsQuery();
   const { data: exercises = [] } = useGetExercisesQuery();
   const [createExercise] = useCreateExerciseMutation();
-  const [updateExercise] = useUpdateExerciseMutation();
   const [deleteExercise] = useDeleteExerciseMutation();
 
   const [editing, setEditing] = useState<Exercise | null>(null);
@@ -21,112 +24,104 @@ export default function ExercisesPage() {
     muscleGroup: '',
     description: '',
   });
+  const [selectedGroup, setSelectedGroup] = useState<string>('');
+  const [showConfirm, setShowConfirm] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
 
   const handleSubmit = async () => {
     try {
-      if (editing) {
-        await updateExercise({ id: editing._id, data: form }).unwrap();
-      } else {
-        await createExercise(form).unwrap();
-      }
+      await createExercise(form).unwrap();
       setForm({ name: '', muscleGroup: '', description: '' });
-      setEditing(null);
-    } catch (err) {
+      setShowModal(false);
+    } catch {
       alert('Something went wrong');
     }
   };
 
-  const handleEdit = (ex: Exercise) => {
-    setEditing(ex);
-    setForm({
-      name: ex.name,
-      muscleGroup: ex.muscleGroup,
-      description: ex.description || '',
-    });
-  };
-
-  const handleDelete = async (id: string) => {
-    if (confirm('Delete this exercise?')) {
-      await deleteExercise(id);
-    }
-  };
-
   return (
-    <div className='px-4 py-6 max-w-md mx-auto space-y-6 min-h-screen bg-white dark:bg-black'>
-      <h1 className='text-3xl font-bold text-center text-gray-900 dark:text-white'>
-        Manage Exercises
-      </h1>
-      <div className='p-4 bg-white text-black dark:bg-black dark:text-white'>
-        Theme test
+    <div className='max-w-md mx-auto space-y-6 min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)]'>
+      <div>
+        <h1 className='text-2xl font-bold text-center mb-4'>Exercises</h1>
+
+        {/* Muscle group icon selector */}
+        {!groupsLoading && (
+          <div className='flex flex-wrap gap-2 mb-6 justify-center'>
+            {groups.map((g) => (
+              <button
+                key={g._id}
+                type='button'
+                onClick={() => {
+                  setSelectedGroup(g.slug);
+                  setForm((prev) => ({ ...prev, muscleGroup: g.slug }));
+                }}
+                className={`flex flex-col items-center p-2 border rounded-xl ${
+                  selectedGroup === g.slug
+                    ? 'border-orange bg-[var(--color-bg-secondary)]'
+                    : 'border-[var(--color-border-primary)] hover:bg-[var(--color-bg-tertiary)]'
+                }`}
+              >
+                <img
+                  src={`http://localhost:5050/icons/${g.icon}`}
+                  alt={g.name}
+                  className='w-8 h-8 mb-1'
+                />
+                <span className='text-xs'>{g.name}</span>
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div className='flex justify-center'>
+          <Button onClick={() => setShowModal(true)}>+ Create Exercise</Button>
+        </div>
       </div>
+
       <div className='space-y-4'>
+        {exercises.map((ex) => (
+          <ExerciseCard
+            key={ex._id}
+            exercise={ex}
+            editing={editing}
+            form={form}
+            setForm={setForm}
+            onEdit={() => setEditing(ex)}
+            onCancelEdit={() => setEditing(null)}
+            showConfirm={showConfirm === ex._id}
+            onDelete={() => setShowConfirm(ex._id)}
+            onConfirmDelete={async () => {
+              await deleteExercise(ex._id);
+              setShowConfirm(null);
+            }}
+            onCancelDelete={() => setShowConfirm(null)}
+            onInputChange={handleChange}
+          />
+        ))}
+      </div>
+
+      <ModalOverlay open={showModal} onClose={() => setShowModal(false)}>
+        <h2 className='text-2xl font-bold mb-4'>Create New Exercise</h2>
         <input
           name='name'
           value={form.name}
           onChange={handleChange}
           placeholder='Exercise name'
-          className='w-full p-3 border rounded-lg bg-gray-50 dark:bg-gray-800 text-sm'
+          className='w-full p-3 mb-3 border rounded-xl bg-[var(--color-bg-tertiary)] text-sm'
         />
-        <input
-          name='muscleGroup'
-          value={form.muscleGroup}
-          onChange={handleChange}
-          placeholder='Muscle group'
-          className='w-full p-3 border rounded-lg bg-gray-50 dark:bg-gray-800 text-sm'
-        />
+        <p className='mb-2'>
+          Muscle Group: {form.muscleGroup || 'None selected'}
+        </p>
         <input
           name='description'
           value={form.description}
           onChange={handleChange}
           placeholder='Description (optional)'
-          className='w-full p-3 border rounded-lg bg-gray-50 dark:bg-gray-800 text-sm'
+          className='w-full p-3 mb-4 border rounded-xl bg-[var(--color-bg-tertiary)] text-sm'
         />
-        <button
-          onClick={handleSubmit}
-          className='w-full bg-pink-600 text-white py-3 rounded-full text-base font-semibold tracking-wide shadow hover:bg-pink-700 transition'
-        >
-          {editing ? 'Update Exercise' : 'Create Exercise'}
-        </button>
-      </div>
-
-      <div className='space-y-4'>
-        {exercises.map((ex) => (
-          <div
-            key={ex._id}
-            className='p-4 border rounded-lg bg-gray-50 dark:bg-gray-900 flex flex-col gap-1 shadow-sm'
-          >
-            <div className='text-lg font-semibold text-gray-800 dark:text-white'>
-              {ex.name}{' '}
-              <span className='text-sm font-normal text-gray-500'>
-                ({ex.muscleGroup})
-              </span>
-            </div>
-            {ex.description && (
-              <p className='text-sm text-gray-500 dark:text-gray-300'>
-                {ex.description}
-              </p>
-            )}
-            <div className='flex gap-4 pt-2'>
-              <button
-                onClick={() => handleEdit(ex)}
-                className='text-sm text-blue-600 font-medium hover:underline'
-              >
-                ✏️ Edit
-              </button>
-              <button
-                onClick={() => handleDelete(ex._id)}
-                className='text-sm text-red-600 font-medium hover:underline'
-              >
-                ❌ Delete
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+        <Button onClick={handleSubmit}>Create Exercise</Button>
+      </ModalOverlay>
     </div>
   );
 }
