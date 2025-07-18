@@ -26,7 +26,7 @@ export function Navigation() {
       <div className='fixed top-4 right-4 z-50 flex gap-4 items-center'>
         <h3>GymNotes</h3>
         <button
-          className='lg:hidden p-2 rounded-full bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20'
+          className='lg:hidden p-2 rounded-full bg-gray-200 dark:bg-sec-dark dark:hover:bg-white/20'
           onClick={() => setOpen(!open)}
           aria-label='Toggle Menu'
         >
