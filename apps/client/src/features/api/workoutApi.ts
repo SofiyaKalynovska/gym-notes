@@ -1,5 +1,5 @@
 import { apiSlice } from './apiSlice';
-import { Exercise, WorkoutSession } from '@/types';
+import { Exercise, MuscleGroup, WorkoutSession } from '@/types';
 
 export const workoutApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -76,6 +76,9 @@ export const workoutApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Workout'],
     }),
+     getMuscleGroups: builder.query<MuscleGroup[], void>({
+      query: () => '/muscle-groups',
+    }),
   }),
 });
 
@@ -90,4 +93,5 @@ export const {
   useGetAllWorkoutsQuery,
   useLazyGetAllWorkoutsQuery,
   useCreateWorkoutMutation,
+  useGetMuscleGroupsQuery
 } = workoutApi;
