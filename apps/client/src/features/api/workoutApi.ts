@@ -88,5 +88,6 @@ export const {
   useDeleteExerciseMutation,
   useGetLastLogsQuery,
   useGetAllWorkoutsQuery,
+  useLazyGetAllWorkoutsQuery,
   useCreateWorkoutMutation,
 } = workoutApi;
