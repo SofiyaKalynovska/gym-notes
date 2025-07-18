@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose from 'mongoose';
 
 const ExerciseSchema = new mongoose.Schema({
   name: {
@@ -7,12 +7,13 @@ const ExerciseSchema = new mongoose.Schema({
     trim: true,
   },
   muscleGroup: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'MuscleGroup',                 
     required: true,
   },
   description: {
     type: String,
   },
-}, { timestamps: true })
+}, { timestamps: true });
 
-export default mongoose.model('Exercise', ExerciseSchema)
+export default mongoose.model('Exercise', ExerciseSchema);
