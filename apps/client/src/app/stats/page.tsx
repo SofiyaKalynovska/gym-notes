@@ -20,7 +20,7 @@ export default function StatsPage() {
           <button
             key={e._id}
             onClick={() => setSelectedId(e._id)}
-            className={`rounded px-3 py-2 text-sm border 
+            className={`rounded-xl px-3 py-2 text-sm border 
               ${selectedId === e._id
                 ? 'bg-blue-600 text-white'
                 : 'bg-gray-200 dark:bg-gray-800 dark:text-white'}`}
@@ -38,7 +38,7 @@ export default function StatsPage() {
             const volume = sets.reduce((sum, s) => sum + s.reps * s.weight, 0)
 
             return (
-              <div key={log._id} className="bg-gray-100 dark:bg-gray-900 p-4 rounded-md border">
+              <div key={log._id} className="bg-gray-100 dark:bg-gray-900 p-4 rounded-xl border">
                 <h2 className="font-semibold text-sm text-gray-700 dark:text-gray-300">
                   {log.date} — {sets.length} sets, total volume: <strong>{volume} kg</strong>
                 </h2>
